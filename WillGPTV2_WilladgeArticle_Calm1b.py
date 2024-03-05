@@ -75,6 +75,7 @@ lora_config = LoraConfig(
 model = prepare_model_for_int8_training(model)
 
 # LoRAモデルの準備
+#これだけ何故か２回実行しないと行けない
 model = get_peft_model(model, lora_config)
 
 
@@ -96,7 +97,7 @@ trainer = transformers.Trainer(
     train_dataset=formatted_data,
     args = transformers.TrainingArguments(
     output_dir=output_dir,
-    num_train_epochs=900,
+    num_train_epochs=15,
     #勾配と学習率を設定
     gradient_accumulation_steps = 2,
     learning_rate = 5e-5,
