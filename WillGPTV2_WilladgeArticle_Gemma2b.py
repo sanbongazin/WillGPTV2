@@ -76,7 +76,10 @@ lora_config = LoraConfig(
 model = prepare_model_for_int8_training(model)
 
 # LoRAモデルの準備
-model = get_peft_model(model, lora_config)
+try:
+    model = get_peft_model(model, lora_config)
+except:
+    model = get_peft_model(model, lora_config)
 
 
 # 学習可能パラメータの確認

@@ -1,8 +1,17 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-tokenizer = AutoTokenizer.from_pretrained("sanbongazin/willgpt-neox-small_v2", use_fast=False)
-model = AutoModelForCausalLM.from_pretrained("sanbongazin/willgpt-neox-small_v2",device_map="cuda:0",)
+token="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"
+model_name="sanbongazin/willgpt-neox-small_v2"
+
+
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+
+
+try:
+    model = AutoModelForCausalLM.from_pretrained(model_name,device_map="cuda:0",token=token)
+except:
+    model = AutoModelForCausalLM.from_pretrained(model_name,device_map="cuda:0",token=token)
 
 if torch.cuda.is_available():
     model = model.to("cuda")

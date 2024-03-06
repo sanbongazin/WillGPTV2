@@ -75,8 +75,11 @@ lora_config = LoraConfig(
 model = prepare_model_for_int8_training(model)
 
 # LoRAモデルの準備
-model = get_peft_model(model, lora_config)
-
+#これだけ何故か２回実行しないと行けない
+try:
+    model = get_peft_model(model, lora_config)
+except:
+    model = get_peft_model(model, lora_config)
 
 # 学習可能パラメータの確認
 model.print_trainable_parameters()
@@ -116,8 +119,4 @@ trainer.train()
 trainer.model.save_pretrained(peft_name,push_to_hub=True)
 tokenizer.save_pretrained(peft_name,push_to_hub=True)
 model.save_pretrained(peft_name,push_to_hub=True)
-
-from huggingface_hub import notebook_login
-
-notebook_login()
 model.push_to_hub("sanbongazin/willgpt-neox-small_v2")

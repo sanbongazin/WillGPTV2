@@ -1,8 +1,8 @@
 #なぜかNoteBookなら動作するのでやってみて
 # モデルの準備
 model_name = "cyberagent/open-calm-1b"
-peft_name = "lorappo-open-calm-1b"
-output_dir = "lorappo-open-calm-1b-results"
+peft_name = "willgpt-open-calm-1b"
+output_dir = "willgpt-open-calm-1b-results"
 
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling, AutoTokenizer, AutoModelForCausalLM
 import torch,transformers
@@ -22,7 +22,7 @@ dataset = load_dataset("sanbongazin/WilladgeArticle")
 data=dataset["train"]
 formatted_data=[]
 
-CUTOFF_LEN = 256  # コンテキスト長
+CUTOFF_LEN = 4000  # コンテキスト長
 # トークナイズ関数
 def tokenize(prompt, tokenizer):
     result = tokenizer(
@@ -76,7 +76,10 @@ model = prepare_model_for_int8_training(model)
 
 # LoRAモデルの準備
 #これだけ何故か２回実行しないと行けない
-model = get_peft_model(model, lora_config)
+try:
+    model = get_peft_model(model, lora_config)
+except:
+    model = get_peft_model(model, lora_config)
 
 
 # 学習可能パラメータの確認
@@ -97,14 +100,15 @@ trainer = transformers.Trainer(
     train_dataset=formatted_data,
     args = transformers.TrainingArguments(
     output_dir=output_dir,
-    num_train_epochs=15,
+    num_train_epochs=20,
     #勾配と学習率を設定
     gradient_accumulation_steps = 2,
     learning_rate = 5e-5,
-    per_device_train_batch_size=4,
+    per_device_train_batch_size=2,
     logging_dir="./logs",
-    logging_steps=500,
-    save_steps=5000,
+    #config.jsonが出てこないのでまずは１回で済ませる
+    logging_steps=1,
+    save_steps=20,
     overwrite_output_dir=True,
     remove_unused_columns=False,
     
@@ -116,9 +120,5 @@ trainer.train()
 # LoRAモデルの保存
 trainer.model.save_pretrained(peft_name,push_to_hub=True)
 tokenizer.save_pretrained(peft_name,push_to_hub=True)
-model.save_pretrained(peft_name,push_to_hub=True)
+model.push_to_hub("sanbongazin/willgpt-open-calm-1b")
 
-from huggingface_hub import notebook_login
-
-notebook_login()
-model.push_to_hub("sanbongazin/willgpt-neox-small_v2")
