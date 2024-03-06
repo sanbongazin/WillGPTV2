@@ -27,3 +27,5 @@ japanese-gpt-neox-small-results/checkpoint-1000/scheduler.pt
 japanese-gpt-neox-small-results/checkpoint-3000/scheduler.pt
 japanese-gpt-neox-small-results/checkpoint-2000/optimizer.pt
 japanese-gpt-neox-small-results/checkpoint-5000/optimizer.pt
+*.safetensors
+*.pt
