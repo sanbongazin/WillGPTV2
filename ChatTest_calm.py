@@ -1,15 +1,17 @@
-import transformers
+import transformers,torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
+from peft import AutoPeftModelForCausalLM
 
 assert transformers.__version__ >= "4.34.1"
 
 token="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"
+# model_name="sanbongazin/willgpt-neox-small_v2"
 model_name="sanbongazin/willgpt-open-calm-1b"
 
 try:
-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", torch_dtype="auto",token=token)
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu", low_cpu_mem_usage=True)
 except:
-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", torch_dtype="auto",token=token)
+    model = AutoPeftModelForCausalLM.from_pretrained(model_name, device_map="cpu", low_cpu_mem_usage=True)
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True,token=token)

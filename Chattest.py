@@ -1,5 +1,8 @@
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch,transformers
+from transformers import AutoTokenizer,AutoModelForCausalLM
+from peft import AutoPeftModelForCausalLM
+
+assert transformers.__version__ >= "4.38.1"
 
 token="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"
 model_name="sanbongazin/willgpt-neox-small_v2"
@@ -9,9 +12,9 @@ tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
 
 
 try:
-    model = AutoModelForCausalLM.from_pretrained(model_name,device_map="cuda:0",token=token)
+    model = AutoModelForCausalLM.from_pretrained(model_name,device_map="cpu",token=token)
 except:
-    model = AutoModelForCausalLM.from_pretrained(model_name,device_map="cuda:0",token=token)
+    model = AutoPeftModelForCausalLM.from_pretrained(model_name,device_map="cpu",token=token)
 
 if torch.cuda.is_available():
     model = model.to("cuda")
