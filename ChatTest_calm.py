@@ -6,8 +6,8 @@ assert transformers.__version__ >= "4.34.1"
 
 token="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"
 # model_name="sanbongazin/willgpt-neox-small_v2"
-model_name="sanbongazin/willgpt-open-calm-1b"
-# model_name="sanbongazin/willgpt-Gemma"
+# model_name="sanbongazin/willgpt-open-calm-1b"
+model_name="sanbongazin/willgpt-Gemma2b"
 
 try:
     model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu", low_cpu_mem_usage=True)
